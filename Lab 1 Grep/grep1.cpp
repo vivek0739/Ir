@@ -1,21 +1,41 @@
 #include <bits/stdc++.h>
 #include <dirent.h>
 using namespace std;
-void SubString(char text[], char pattern[], int patLen)
+int lps[500] = {0};
+void createLps(char pattern[]) {
+	lps[0] = lps[1] = 0;
+	if(pattern[1] == '\0') {
+		return;
+	}
+	for(int i = 2; pattern[i - 1] != '\0'; i++) {
+		int j = lps[i - 1];
+		while(1) {
+			if(pattern[j] == pattern[i - 1]) {
+				lps[i] = j + 1;
+			}
+			if(j == 0) {
+				lps[i] = 0;
+				break;
+			} else 
+				j = lps[j];
+
+		}
+	}
+}
+void KMP(char text[], char pattern[], int patLen)
 {
-    int n = strlen(text);
+        
 	string output;
 	int prevInd = 0;
+	createLps(pattern); 
 	int i = 0;
 	int j = 0;
 	int flag = 0;
-	for(j=0;j<n-patLen;j++) {
-		for(i = 0 ;i<patLen;i++)
-		{
-			if(text[i+j]!=pattern[i]) break;
-		}
-		
-			
+	while(1) {
+		if(text[j] == '\0') break; 
+		if(text[j] == pattern[i]) {
+			i++;
+			j++;
 			if(i == patLen) {
 				flag = 1;	
 				for(int k = prevInd; k <= j - patLen - 1; k++) {
@@ -30,8 +50,9 @@ void SubString(char text[], char pattern[], int patLen)
 				prevInd = j;
 
 			}
-		
-		
+		}
+		else if(i > 0) i = lps[i];
+		else j++;
 	}
 	if(flag) {
 		cout << output;
@@ -50,9 +71,7 @@ std::vector<std::string> open(std::string path = ".") {
     dir = opendir(path.c_str());
 
     while (pdir = readdir(dir)) {
-    	string news = path.c_str();
-    	news+=pdir->d_name;
-        files.push_back(news);
+        files.push_back(pdir->d_name);
     }
     
     return files;
@@ -61,7 +80,7 @@ int main(int argc, char *argv[]) {
 	char *searchString, *fileName, *directoryName;
 	searchString = argv[1];
 	std::vector<std::string> f;
-	f = open("/home/vivek/lab/"); // or pass which dir to open
+	f = open(); // or pass which dir to open
 	int n=f.size();
 	for(int i=0;i<n;i++)
 	{
@@ -69,7 +88,7 @@ int main(int argc, char *argv[]) {
 		ifstream fin(f[i].c_str(), ios::in);
 		char inputString[500];
 		while(fin.getline(inputString, 500)) {
-			SubString(inputString, searchString, strlen(searchString));
+			KMP(inputString, searchString, strlen(searchString));
 		}
 	}
 	
