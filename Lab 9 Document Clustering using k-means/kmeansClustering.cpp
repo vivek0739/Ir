@@ -10,13 +10,11 @@ double calcDistance(int i, int j) {
 	map<string, bool>::iterator it;
 	double sum1 = 0, sum2 = 0, dotProd = 0;
 	for(it = uniqueWords.begin(); it != uniqueWords.end(); it++) {
-		dotProd += termFrequency[i][it -> first] * clusterMeans[j][it -> first];
-		sum1 += termFrequency[i][it -> first] * termFrequency[i][it -> first];
-		sum2 += clusterMeans[j][it -> first] * clusterMeans[j][it -> first];
+		sum1 = termFrequency[i][it -> first] * termFrequency[i][it -> first];
+		sum2 = clusterMeans[j][it -> first] * clusterMeans[j][it -> first];
 	}
-	sum1 = sqrt(sum1);
-	sum2 = sqrt(sum2);
-	return dotProd / (sum1 * sum2);
+	sum1 = sqrt(sum1+sum2);
+	return sum1;
 }
 int main() {
 	int n, k;
